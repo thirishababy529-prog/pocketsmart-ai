@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Recommendations — PocketSmart AI{% endblock %}
+{% block content %}
+<section class="section">
+  <div id="recommendations" class="recommendation-page"><p class="muted">Loading recommendation...</p></div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+(async () => {
+  const params = new URLSearchParams(location.search);
+  const id = params.get("history");
+  if (!id) { location.href="/dashboard"; return; }
+  const res = await fetch(`/recommendations-details/${encodeURIComponent(id)}`);
+  if (!res.ok) { document.querySelector("#recommendations").innerHTML="<p class='error'>Recommendation not found.</p>"; return; }
+  renderRecommendation(await res.json(), document.querySelector("#recommendations"));
+})();
+</script>
+{% endblock %}

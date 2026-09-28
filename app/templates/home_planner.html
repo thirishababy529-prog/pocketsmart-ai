@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Home Interior Planner — PocketSmart AI{% endblock %}
+{% block content %}
+<section class="planner-layout">
+  <div class="planner-intro">
+    <span class="eyebrow">HOME INTERIOR</span><h1>Design within your budget.</h1>
+    <p>Tell us what rooms and items you need. PocketSmart will allocate the budget and create a practical shortlist.</p>
+    <div class="tip">Tip: Start with essentials and use the remaining budget for decor.</div>
+  </div>
+  <form id="homeForm" class="form-card wide">
+    <label>Total budget (₹)<input name="budget" type="number" min="1" required placeholder="50000"></label>
+    <div class="two-col">
+      <label>Style<select name="style"><option>Modern</option><option>Minimal</option><option>Traditional</option><option>Contemporary</option></select></label>
+      <label>City<input name="city" value="Bengaluru"></label>
+    </div>
+    <div class="room-builder">
+      <div class="room-row">
+        <select class="room-type"><option>Living Room</option><option>Kitchen</option><option>Bedroom</option><option>Dining Room</option></select>
+        <input class="room-items" placeholder="e.g. sofa x1, ceiling light x2">
+        <button type="button" class="remove-room">×</button>
+      </div>
+    </div>
+    <button type="button" id="addRoom" class="btn btn-outline">+ Add room</button>
+    <button class="btn full" type="submit">Generate Home Plan</button>
+    <div id="error" class="error"></div>
+  </form>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+const builder = document.querySelector(".room-builder");
+document.querySelector("#addRoom").onclick = () => {
+  const row = builder.querySelector(".room-row").cloneNode(true);
+  row.querySelector(".room-items").value = "";
+  builder.appendChild(row);
+};
+builder.addEventListener("click", e => { if (e.target.classList.contains("remove-room") && builder.children.length > 1) e.target.closest(".room-row").remove(); });
+
+document.querySelector("#homeForm").onsubmit = async e => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const rooms = [...builder.querySelectorAll(".room-row")].map(row => ({
+    room_type: row.querySelector(".room-type").value,
+    items: row.querySelector(".room-items").value.split(",").map(x => x.trim()).filter(Boolean).map(x => {
+      const m = x.match(/^(.*?)\s*x\s*(\d+)$/i);
+      return {name: (m ? m[1] : x).trim(), quantity: m ? Number(m[2]) : 1};
+    })
+  })).filter(r => r.items.length);
+  const body = {budget:Number(fd.get("budget")), style:fd.get("style"), city:fd.get("city"), rooms, priorities:[]};
+  await submitPlanner("/generate-home", body, e.target);
+};
+</script>
+{% endblock %}

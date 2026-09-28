@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Party Planner — PocketSmart AI{% endblock %}
+{% block content %}
+<section class="planner-layout">
+  <div class="planner-intro"><span class="eyebrow">PARTY PLANNER</span><h1>Make the budget do more.</h1><p>Set the guest count and event context. The assistant will split spending across the main event needs.</p><div class="tip">Keep a contingency buffer for last-minute expenses.</div></div>
+  <form id="partyForm" class="form-card wide">
+    <label>Total budget (₹)<input name="budget" type="number" min="1" required placeholder="40000"></label>
+    <div class="two-col">
+      <label>Guests<input name="guest_count" type="number" min="1" required placeholder="30"></label>
+      <label>Event type<select name="event_type"><option>Birthday</option><option>Wedding</option><option>Corporate</option><option>Family Gathering</option><option>Other</option></select></label>
+    </div>
+    <div class="two-col">
+      <label>Venue type<select name="venue_type"><option>Home</option><option>Banquet Hall</option><option>Restaurant</option><option>Outdoor</option></select></label>
+      <label>City<input name="city" value="Bengaluru"></label>
+    </div>
+    <div class="two-col">
+      <label>Food preference<select name="food_preference"><option>Any</option><option>Vegetarian</option><option>Non-vegetarian</option><option>Vegan</option></select></label>
+      <label>Decoration<select name="decoration_style"><option>Elegant</option><option>Colorful</option><option>Minimal</option><option>Traditional</option></select></label>
+    </div>
+    <label class="check"><input name="accommodation_needed" type="checkbox"> Accommodation needed</label>
+    <button class="btn full" type="submit">Generate Party Plan</button>
+    <div id="error" class="error"></div>
+  </form>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+document.querySelector("#partyForm").onsubmit = async e => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const body = Object.fromEntries(fd.entries());
+  body.budget=Number(body.budget); body.guest_count=Number(body.guest_count); body.accommodation_needed=fd.has("accommodation_needed");
+  await submitPlanner("/generate-party", body, e.target);
+};
+</script>
+{% endblock %}

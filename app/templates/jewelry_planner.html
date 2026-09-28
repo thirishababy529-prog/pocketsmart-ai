@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Jewelry Planner — PocketSmart AI{% endblock %}
+{% block content %}
+<section class="planner-layout">
+  <div class="planner-intro"><span class="eyebrow">JEWELRY PLANNER</span><h1>Find a look that fits.</h1><p>Choose an occasion and style. Optionally upload an outfit image for broad color and aesthetic cues.</p><div class="tip">The image is processed for style cues and is not permanently stored by this application.</div></div>
+  <form id="jewelryForm" class="form-card wide" enctype="multipart/form-data">
+    <label>Budget (₹)<input name="budget" type="number" min="1" required placeholder="10000"></label>
+    <div class="two-col">
+      <label>Occasion<select name="occasion"><option>Wedding</option><option>Party</option><option>Festival</option><option>Formal Event</option><option>Everyday</option></select></label>
+      <label>Style<select name="style"><option>Classic</option><option>Minimal</option><option>Traditional</option><option>Statement</option><option>Contemporary</option></select></label>
+    </div>
+    <div class="two-col">
+      <label>Metal<select name="metal"><option>Any</option><option>Gold-tone</option><option>Silver-tone</option><option>Rose-gold-tone</option></select></label>
+      <label>Color preference<input name="color_preference" placeholder="e.g. blue, neutral, warm"></label>
+    </div>
+    <label>Notes<textarea name="notes" rows="3" placeholder="Anything else the planner should consider?"></textarea></label>
+    <label>Outfit image (optional)<input name="outfit_image" type="file" accept="image/jpeg,image/png,image/webp"></label>
+    <button class="btn full" type="submit">Generate Jewelry Plan</button>
+    <div id="error" class="error"></div>
+  </form>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+document.querySelector("#jewelryForm").onsubmit = async e => {
+  e.preventDefault();
+  await submitPlanner("/generate-jewelry", new FormData(e.target), e.target, true);
+};
+</script>
+{% endblock %}

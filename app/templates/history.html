@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}History — PocketSmart AI{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="section-heading"><span class="eyebrow">SAVED PLANS</span><h1>Recommendation history</h1></div>
+  <div id="history" class="history-grid"><p class="muted">Loading...</p></div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+(async () => {
+  const res = await fetch("/history");
+  if (!res.ok) { location.href="/login"; return; }
+  const data = await res.json();
+  const el = document.querySelector("#history");
+  if (!data.length) { el.innerHTML="<p class='muted'>No recommendations saved yet.</p>"; return; }
+  el.innerHTML = data.map(h => `<a class="history-card" href="/recommendations?history=${h.id}"><span>${escapeHtml(h.planner)}</span><h3>${escapeHtml(h.title)}</h3><small>${new Date(h.created_at).toLocaleString()}</small></a>`).join("");
+})();
+</script>
+{% endblock %}

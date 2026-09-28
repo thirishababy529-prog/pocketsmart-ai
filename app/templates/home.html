@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}PocketSmart AI — Smart Budget Assistant{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <span class="eyebrow">GENAI BUDGET ASSISTANT</span>
+    <h1>Turn your budget into a <span>smart plan.</span></h1>
+    <p>Get structured, budget-aware ideas for home interiors, parties, and jewelry — with optional outfit-image analysis.</p>
+    <div class="actions">
+      <a class="btn" href="{% if user %}/dashboard{% else %}/register{% endif %}">Start Planning</a>
+      <a class="btn btn-outline" href="#planners">Explore planners</a>
+    </div>
+  </div>
+  <div class="hero-card">
+    <div class="orb">✦</div>
+    <h3>AI-powered planning</h3>
+    <p>Set a budget, share your preferences, and receive a structured plan with estimated spend, remaining budget, and recommendations.</p>
+  </div>
+</section>
+
+<section id="planners" class="section">
+  <div class="section-heading">
+    <span class="eyebrow">THREE SMART PLANNERS</span>
+    <h2>One assistant for everyday decisions</h2>
+  </div>
+  <div class="grid-3">
+    <a class="feature-card" href="/home-planner">
+      <span class="icon">⌂</span><h3>Home Interior</h3>
+      <p>Plan rooms, quantities, furniture, lighting and decor within a defined budget.</p>
+    </a>
+    <a class="feature-card" href="/party-planner">
+      <span class="icon">✦</span><h3>Party Planner</h3>
+      <p>Allocate spending across catering, venue, decoration and entertainment.</p>
+    </a>
+    <a class="feature-card" href="/jewelry-planner">
+      <span class="icon">◇</span><h3>Jewelry</h3>
+      <p>Explore occasion and style-matched jewelry with optional outfit-image cues.</p>
+    </a>
+  </div>
+</section>
+
+<section class="section dark-section">
+  <div class="section-heading">
+    <span class="eyebrow">HOW IT WORKS</span>
+    <h2>Budget → Context → Recommendations</h2>
+  </div>
+  <div class="steps">
+    <div><b>01</b><h3>Set your budget</h3><p>Tell PocketSmart what you can spend.</p></div>
+    <div><b>02</b><h3>Add context</h3><p>Give room, guest, occasion, style, or image details.</p></div>
+    <div><b>03</b><h3>Review your plan</h3><p>See estimated spend, allocations and catalog suggestions.</p></div>
+  </div>
+</section>
+{% endblock %}

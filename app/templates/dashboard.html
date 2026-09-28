@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — PocketSmart AI{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="welcome">
+    <div><span class="eyebrow">YOUR DASHBOARD</span><h1>Plan something smart.</h1><p class="muted">Choose a planner and keep your recommendations in one place.</p></div>
+    <div id="sessionCard" class="stat-card">Loading...</div>
+  </div>
+  <div class="grid-3">
+    <a class="feature-card" href="/home-planner"><span class="icon">⌂</span><h3>Home</h3><p>Furniture, lighting and decor.</p></a>
+    <a class="feature-card" href="/party-planner"><span class="icon">✦</span><h3>Party</h3><p>Catering, venue and decoration.</p></a>
+    <a class="feature-card" href="/jewelry-planner"><span class="icon">◇</span><h3>Jewelry</h3><p>Occasion and style matching.</p></a>
+  </div>
+  <div class="section-heading small"><span class="eyebrow">RECENT</span><h2>Latest plans</h2></div>
+  <div id="recent" class="history-grid"><p class="muted">Loading history...</p></div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+(async () => {
+  const session = await fetch("/session-data");
+  if (!session.ok) { location.href="/login"; return; }
+  const s = await session.json();
+  document.querySelector("#sessionCard").innerHTML = `<strong>${escapeHtml(s.name)}</strong><span>${s.history_count} saved plan(s)</span>`;
+  const res = await fetch("/history");
+  const data = await res.json();
+  const el = document.querySelector("#recent");
+  if (!data.length) { el.innerHTML = '<p class="muted">No plans yet. Start with one of the planners above.</p>'; return; }
+  el.innerHTML = data.slice(0,6).map(h => `<a class="history-card" href="/recommendations?history=${h.id}"><span>${escapeHtml(h.planner)}</span><h3>${escapeHtml(h.title)}</h3><small>${new Date(h.created_at).toLocaleString()}</small></a>`).join("");
+})();
+</script>
+{% endblock %}
